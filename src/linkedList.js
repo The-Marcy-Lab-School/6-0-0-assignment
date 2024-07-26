@@ -1,55 +1,134 @@
-// Question 1: Implement a Linked List
-
 class Node {
-    constructor(data = null) {
-
+    constructor(data = null, next = null) {
+        this.data = data 
+        this.next = next 
     }
 }
 
 class LinkedList {
+    #len = 0
+
     constructor() {
-
+        this.head = null 
     }
 
-    appendToTail(data) {
-        // add new Node with data to tail
+    appendToTail(data) { // add new node to end of list
+        const node = new Node(data)
+        this.#len++
+
+        if (!this.head) { // if empty list
+            this.head = node // new node becomes head
+            return 
+        }
+       
+        let cur = this.head 
+        while (cur.next) { // traverse to tail
+            cur = cur.next 
+        }
+
+        cur.next = node // link new node to tail
     }
 
-    prependToHead(data) {
-        // add new Node with data to head   
+    prependToHead(data) { // add new node to head 
+        // create new node
+        // set new node's next to the head
+        // change head to be the new node
+        this.head = new Node(data, this.head)
+        this.#len++
     }
 
     removeHead() {
-        // remove the first Node in the LinkedList and returns its data
+        if (!this.head) return null 
+
+        const data = this.head.data // save head data
+        this.head = this.head.next // remove head node
+        this.#len--
+        return data 
     }
 
     contains(data) {
-        // returns true is any Node in the LinkedList contains the value data, false otherwise
+        let cur = this.head 
+
+        while (cur) {
+            if (cur.data === data) return true 
+            cur = cur.next 
+        }
+
+        return false 
     }
 
     length() {
-        //returns the length of the LinkedList as an integer value
+        return this.#len
+    }
+
+    print() {
+        let cur = this.head, list = ""
+	    while (cur) {
+	      list += `${cur.data} -> `;
+	      cur = cur.next;
+	    }
+	    console.log(list += "NULL")
     }
 }
 
-// Question 2: Cycle Check
-const isCyclic = (headNode) => {
-    //returns true is the list has a cycle, false otherwise
+const isCyclic = head => {
+    let slow = head, fast = slow.next 
+
+    while (fast && fast.next) {
+        if (fast === slow) return true 
+
+        slow = slow.next 
+        fast = fast.next.next 
+    }
+
+    return false 
 };
 
-// Question 3: Reverse a Linked List
-const reverse = (headNode) => {
-    //returns the new headNode
+const reverse = head => {
+    let cur = head, prev = null 
+
+    while (cur) {
+        const nxt = cur.next 
+        cur.next = prev 
+        prev = cur 
+        cur = nxt 
+    }
+
+    return prev 
 };
 
-// Question 4: Merge Two Lists
-const mergeLists = (head1, head2) => {
-    //returns the head node of the merged linked list
+const mergeLists = (a, b) => {
+    const dummy = new Node()
+    let tail = dummy 
+
+    while (a && b) {
+        if (a.data < b.data) {
+            tail.next = a 
+            a = a.next 
+        } else {
+            tail.next = b 
+            b = b.next 
+        }
+        tail = tail.next 
+    }
+
+    tail.next = a || b // can use coalesce '??'
+
+    return dummy.next 
 };
 
-// Question 5: Remove duplicates
-const removeDuplicates = (headNode) => {
-    //returns the headNode
+const removeDuplicates = head => {
+    const set = new Set()
+    let cur = prev = head 
+
+    while (cur) {
+        if (set.has(cur.data)) prev.next = cur.next
+        set.add(cur.data)
+        prev = cur 
+        cur = cur.next 
+    }
+
+    return head 
 };
 
 module.exports = {
